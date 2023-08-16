@@ -1,0 +1,13 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 10px;
+  }
+
+.logo {
+    /* align-items: flex-start; */
+    text-align: left;
+}
