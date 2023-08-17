@@ -1,0 +1,41 @@
+.customTable {
+    width: 90%;
+    border-collapse: collapse;
+    color: #000000;
+    border-radius: 5px;
+    border-color: #000000;
+    font-size: 14px;
+    padding: 20px;
+  }
+  
+.customTable td, .customTable th {
+    border-width: 0px;
+    border-style: solid;
+    padding: 5px;
+    display: inline-block;
+  }
+
+  .wrapper {
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 80%;
+    height: 100%;
+  }
+
+  .authors {
+    display: inline-block;
+    justify-content: left;
+  }
+
+  .descr {
+    width: 800px;
+    height: 100px;
+  }
+
+  .author-names {
+    white-space: nowrap; /* Prevent line breaks */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Add ellipsis to overflow text */
+    max-width: 100%; /* Ensure the text fits within the container */
+  }
+  
