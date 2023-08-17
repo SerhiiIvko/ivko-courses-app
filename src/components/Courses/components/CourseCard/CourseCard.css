@@ -31,4 +31,11 @@
     width: 800px;
     height: 100px;
   }
+
+  .author-names {
+    white-space: nowrap; /* Prevent line breaks */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Add ellipsis to overflow text */
+    max-width: 100%; /* Ensure the text fits within the container */
+  }
   

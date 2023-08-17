@@ -1,0 +1,67 @@
+.course-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%; 
+  }
+  
+  header {
+    display: flex;
+    font-size: 24px;
+    justify-content: flex-start;
+    font-weight: bold;
+    margin-bottom: 20px;
+    width: 80%;
+  }
+  
+  .bordered-block {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid black;
+    padding: 20px;
+    margin-bottom: 20px;
+    width: 80%;
+    justify-content: space-between;
+  }
+
+  .bordered-block::before {
+    content: "";
+    position: relative;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-10%);
+    border-left: 1px solid black;
+  }
+  
+  .bordered-block > div {
+    flex: 1;
+    display: flex;
+    justify-content: left;
+    align-items: left;
+  }
+  
+  .block-text {
+    flex-direction: row;
+    font-size: 16px;
+    padding: 5px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .action-button {
+    display: flex;
+    justify-content: flex-end;
+    width: 80%;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 10px;
+  }
+
+  .author-names {
+    white-space: nowrap; /* Prevent line breaks */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Add ellipsis to overflow text */
+    max-width: 100%; /* Ensure the text fits within the container */
+  }

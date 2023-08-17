@@ -1,31 +1,46 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from '../../common/Button/Button';
-import Courses from '../Courses/Courses';
-import { mockedCoursesList, mockedAuthorsList } from '../../constants';
+import getCourseDuration from '../../helpers/getCourseDuration';
+import formatCreationDate from '../../helpers/formatCreationDate';
+import getAuthorNames from '../../helpers/getAuthorNames';
+import { mockedAuthorsList } from '../../constants';
+import './CourseInfo.css';
 
-function CourseInfo({ courseId }) {
-	const [showOtherComponent, setShowOtherComponent] = useState(false);
-	const course = mockedCoursesList.find((course) => course.id === courseId);
-	const handleClick = () => {
-		setShowOtherComponent(true);
+function CourseInfo({ course, btnText, onBtnClick }) {
+	const handleBtnClick = () => {
+		onBtnClick();
 	};
-	const authorNames = course.authors.map((authorId) => {
-		const author = mockedAuthorsList.find((author) => author.id === authorId);
-		return author.name;
-	});
+
 	return (
 		<div>
-			{showOtherComponent ? (
-				<Courses />
-			) : (
-				<div>
-					<h2>{course.title}</h2>
-					<p>{course.description}</p>
-					<p>Duration: {course.duration} minutes</p>
-					<p>Authors: {authorNames.join(', ')}</p>
+			<div class='course-container'>
+				<header>{course.title}</header>
+				<div class='bordered-block'>
+					<div class='block-text'>{course.description}</div>
+					<div class='block-text'>
+						<div>
+							<p>
+								<strong>ID: </strong> {course.id}
+							</p>
+							<p>
+								<strong>Duration: </strong> {getCourseDuration(course.duration)}{' '}
+								hours
+							</p>
+							<p>
+								<strong>Created: </strong>
+								{formatCreationDate(course.creationDate)}{' '}
+							</p>
+							<p className='author-names'>
+								<strong>Authors: </strong>
+								{getAuthorNames(mockedAuthorsList, course.authors)}
+							</p>
+						</div>
+					</div>
 				</div>
-			)}
-			<Button text='BACK' onClick={handleClick} />
+				<div className='action-button'>
+					<Button text={btnText} onClick={handleBtnClick} />
+				</div>
+			</div>
 		</div>
 	);
 }
