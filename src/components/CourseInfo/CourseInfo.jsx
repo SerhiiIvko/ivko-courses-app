@@ -13,11 +13,11 @@ function CourseInfo({ course, btnText, onBtnClick }) {
 
 	return (
 		<div>
-			<div class='course-container'>
+			<div className='course-container'>
 				<header>{course.title}</header>
-				<div class='bordered-block'>
-					<div class='block-text'>{course.description}</div>
-					<div class='block-text'>
+				<div className='bordered-block'>
+					<div className='block-text'>{course.description}</div>
+					<div className='block-text'>
 						<div>
 							<p>
 								<strong>ID: </strong> {course.id}
