@@ -1,29 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Input.css';
 
-function Input() {
-	const [nameValue, setNameValue] = useState('');
-
-	const handleChange = (event) => {
-		setNameValue(event.target.value);
-	};
-
-	const handleSubmit = (event) => {
-		alert('A name was submitted: ' + nameValue);
-		event.preventDefault();
-	};
-
+function Input({
+	type = 'text',
+	id,
+	name,
+	value,
+	onChange,
+	label,
+	placeholder,
+}) {
 	return (
-		<form className='form' onSubmit={handleSubmit}>
-			<label>
-				<input
-					type='text'
-					value={nameValue}
-					onChange={handleChange}
-					size='40'
-				/>
-			</label>
-		</form>
+		<div className='form'>
+			{label && (
+				<label className='label' htmlFor={id}>
+					{label}
+				</label>
+			)}
+			<input
+				type={type}
+				id={id}
+				name={name}
+				value={value}
+				onChange={onChange}
+				placeholder={placeholder}
+			/>
+		</div>
 	);
 }
 

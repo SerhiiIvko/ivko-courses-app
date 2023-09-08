@@ -3,14 +3,19 @@ import Logo from './components/Logo/Logo';
 import Button from '../../common/Button/Button';
 import './Header.css';
 
-const Header = (props) => {
+const Header = ({ name, logout }) => {
 	return (
 		<div>
 			<header className='header'>
 				<div className='logo'>
 					<Logo alt='Logo' />
 				</div>
-				<Button text='LOGOUT' />
+				{name && (
+					<div>
+						<span>{name}</span>
+						<Button text='LOGOUT' onClick={logout} />
+					</div>
+				)}
 			</header>
 		</div>
 	);
