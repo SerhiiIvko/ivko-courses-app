@@ -3,9 +3,16 @@ import PropTypes from 'prop-types';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../../common/Button/Button';
 import Input from '../../common/Input/Input';
+import { useDispatch } from 'react-redux';
+import {
+	loginStart,
+	loginSuccess,
+	loginFailed,
+} from '../../store/user/authSlice';
 import './Login.css';
 
 function Login({ setToken }) {
+	const dispatch = useDispatch();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [errors, setErrors] = useState({});
@@ -19,7 +26,7 @@ function Login({ setToken }) {
 			setErrors(validationErrors);
 			return;
 		}
-
+		dispatch(loginStart());
 		const response = await fetch('http://localhost:4000/login', {
 			method: 'POST',
 			body: JSON.stringify({ name, email, password }),
@@ -28,14 +35,16 @@ function Login({ setToken }) {
 		const data = await response.json();
 		const token = data.result;
 
-		if (token) {
+		if (response.ok) {
+			dispatch(loginSuccess(data));
 			setToken({ token, name });
-			navigate('/courses');
+			navigate('/courses/all');
 		} else {
 			const errorMessage = data.errors
 				? data.errors.join(', ')
 				: 'Unsuccessful login attempt!';
 			setErrors({ server: errorMessage });
+			dispatch(loginFailed(errorMessage));
 		}
 	};
 
