@@ -1,4 +1,16 @@
-import { ADD_COURSE, DELETE_COURSE, SAVE_COURSES } from './types.js';
+import {
+	ADD_COURSE,
+	DELETE_COURSE,
+	SAVE_COURSES,
+	GET_COURSES,
+} from './types.js';
+
+export const getCourses = (courseData) => {
+	return {
+		type: GET_COURSES,
+		payload: courseData,
+	};
+};
 
 export const addCourse = (courseData) => {
 	return {

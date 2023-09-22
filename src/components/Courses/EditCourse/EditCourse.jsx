@@ -2,28 +2,20 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import Input from '../../common/Input/Input';
-import Button from '../../common/Button/Button';
-import AuthorItem from './components/AuthorItem/AuthorItem';
-import * as types from '../../store/courses/types';
-import { addCourse } from '../../store/courses/actions';
-import { createCourse, getAuthors } from '../../services';
+import Input from '../../../common/Input/Input';
+import Button from '../../../common/Button/Button';
+import AuthorItem from '../../CreateCourse/components/AuthorItem/AuthorItem';
+import * as types from '../../../store/courses/types';
+import { getCourse, editCourse, getAuthors } from '../../../services';
 
-const CreateCourse = () => {
+const EditCourse = ({ id }) => {
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
-	const [creationDate, setCreationDate] = useState('');
 	const [duration, setDuration] = useState('');
 	const [authors, setAuthors] = useState([]);
 	const [errors, setErrors] = useState({});
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-
-	const currentDate = new Date();
-	const formattedDate = `${currentDate.getFullYear()}-${
-		currentDate.getMonth() + 1
-	}-${currentDate.getDate()}`;
-	console.log('generated creation date: ', formattedDate);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -36,29 +28,25 @@ const CreateCourse = () => {
 		}
 
 		const courseData = {
-			id: uuidv4(),
 			title,
 			description,
-			creationDate,
 			duration: parseInt(duration, 10),
 			authors,
 		};
 
 		try {
-			const data = await createCourse(courseData);
+			const data = await editCourse(id, courseData);
 
 			if (data) {
-				// dispatch(addCourse(data));
 				dispatch({
-					type: types.ADD_COURSE,
+					type: types.SAVE_COURSES,
 					payload: data,
 				});
 				console.log(courseData);
 				setTitle('');
 				setDescription('');
-				setCreationDate(formattedDate);
 				setDuration('');
-				setAuthors(['4c0dc866-59b5-49c3-b851-bedc3582e896']);
+				setAuthors([]);
 				navigate('/courses/all');
 			} else {
 				console.log('ERROR data response create course: ', data);
@@ -147,11 +135,11 @@ const CreateCourse = () => {
 					</div>
 					<br />
 					<Button text='CANCEL' onClick={handleCancel} />
-					<Button type='submit' text='CREATE COURSE' onClick={handleSubmit} />
+					<Button type='submit' text='SAVE COURSE' onClick={handleSubmit} />
 				</form>
 			</div>
 		</div>
 	);
 };
 
-export default CreateCourse;
+export default EditCourse;

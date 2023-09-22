@@ -4,15 +4,16 @@ import SearchBar from './components/SearchBar/SearchBar';
 import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
 import CourseInfo from '../CourseInfo/CourseInfo';
-import reducer from '../../store/courses/coursesReducer';
+import coursesReducer from '../../store/courses/coursesReducer';
 import * as types from '../../store/courses/types';
 import EmptyCoursesList from '../Courses/components/EmptyCourseList/EmptyCourseList';
+import { getCourses } from '../../services';
 import './Courses.css';
 
 const Courses = () => {
 	const [selectedCourse, setSelectedCourse] = useState(null);
 	const [searchQuery, setSearchQuery] = useState('');
-	const [state, dispatch] = useReducer(reducer, { courses: [] });
+	const [state, dispatch] = useReducer(coursesReducer, { courses: [] });
 	const navigate = useNavigate();
 
 	const handleCardClick = (course) => {
@@ -31,26 +32,11 @@ const Courses = () => {
 		setSearchQuery(query);
 	};
 
-	// const backToCourses = () => {
-	// 	navigate('/courses/all');
-	// };
-
 	const fetchCourses = async () => {
 		try {
-			const options = {
-				mode: 'no-cors',
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			};
-			const response = await fetch(
-				'https://example.com/api/courses/all',
-				options
-			);
-			const data = await response.json();
+			const data = await getCourses();
 			dispatch({
-				type: types.ADD_COURSE,
+				type: types.GET_COURSES,
 				payload: data,
 			});
 		} catch (error) {
@@ -60,9 +46,9 @@ const Courses = () => {
 
 	useEffect(() => {
 		fetchCourses();
-	}, []);
+	}, [dispatch]);
 
-	if (state.courses.length === 0) {
+	if (Array.isArray(state.courses.result) === 0) {
 		return <EmptyCoursesList />;
 	}
 
@@ -85,14 +71,26 @@ const Courses = () => {
 					<br />
 					<br />
 					<div>
-						{state.courses
-							.filter((course) =>
-								course.title
-									.toLowerCase()
-									.trim()
-									.includes(searchQuery.toLowerCase())
-							)
-							.map((course) => (
+						{Array.isArray(state.courses.result) &&
+							state.courses.result
+								?.filter((course) =>
+									course.title
+										?.toLowerCase()
+										.trim()
+										.includes(searchQuery.toLowerCase())
+								)
+								.map((course) => (
+									<CourseCard
+										key={course.id}
+										course={course}
+										btext='SHOW COURSE'
+										onCardClick={handleCardClick}
+									/>
+								))}
+					</div>
+					{/* <div>
+						{Array.isArray(state.courses.result) &&
+							state.courses.result.map((course) => (
 								<CourseCard
 									key={course.id}
 									course={course}
@@ -100,7 +98,7 @@ const Courses = () => {
 									onCardClick={handleCardClick}
 								/>
 							))}
-					</div>
+					</div> */}
 				</div>
 			)}
 		</div>

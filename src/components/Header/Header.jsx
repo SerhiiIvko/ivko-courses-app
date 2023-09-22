@@ -5,12 +5,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../store/user/authSlice';
 import './Header.css';
 
-const Header = () => {
-	const user = useSelector((state) => state.auth.data);
+const Header = ({ removeToken }) => {
+	const user = useSelector((state) => state.auth.data?.user);
 	const dispatch = useDispatch();
 
 	const handleLogout = () => {
 		dispatch(logout());
+		removeToken();
 	};
 
 	return (

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../../common/Button/Button';
 import Input from '../../common/Input/Input';
+import { register } from '../../services';
 import './Registration.css';
 
 function Registration() {
@@ -20,22 +21,18 @@ function Registration() {
 			return;
 		}
 
-		const newUser = { name, email, password };
+		try {
+			const result = await register(name, email, password);
 
-		const response = await fetch('http://localhost:4000/register', {
-			method: 'POST',
-			body: JSON.stringify(newUser),
-			headers: { 'Content-Type': 'application/json' },
-		});
-
-		const result = await response.json();
-		console.log(newUser);
-		if (response.ok) {
-			console.log(result);
-			navigate('/login');
-		} else {
-			alert('Unsuccessfull');
-			setErrors({ server: result.errors.join(', ') });
+			if (result.result) {
+				console.log(result);
+				navigate('/login');
+			} else {
+				alert('Unsuccessfull');
+				setErrors({ server: result.errors.join(', ') });
+			}
+		} catch (error) {
+			console.error(error);
 		}
 	};
 

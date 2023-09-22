@@ -8,23 +8,23 @@ const authSlice = createSlice({
 		error: null,
 	},
 	reducers: {
-		loginStart: (state) => {
-			state.loading = true;
-			state.error = null;
-		},
-		loginSuccess: (state, action) => {
-			state.loading = false;
-			state.data = action.payload;
-			state.error = null;
-		},
-		loginFailed: (state, action) => {
-			state.loading = false;
-			state.data = null;
-			state.error = action.payload;
-		},
-		logout: (state) => {
-			state.data = null;
-		},
+		loginStart: (state) => ({
+			loading: true,
+			error: null,
+		}),
+		loginSuccess: (state, action) => ({
+			loading: false,
+			data: action.payload,
+			error: null,
+		}),
+		loginFailed: (state, action) => ({
+			loading: false,
+			data: null,
+			error: action.payload,
+		}),
+		logout: (state) => ({
+			data: null,
+		}),
 	},
 });
 

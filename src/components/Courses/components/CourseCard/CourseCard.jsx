@@ -1,6 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 import Button from '../../../../common/Button/Button';
 import getCourseDuration from '../../../../helpers/getCourseDuration';
 import formatCreationDate from '../../../../helpers/formatCreationDate';
@@ -8,13 +9,15 @@ import getAuthorNames from '../../../../helpers/getAuthorNames';
 import { mockedAuthorsList } from '../../../../constants';
 import './CourseCard.css';
 
-function CourseCard({ course, btext, onCardClick, deleteClick, editClick }) {
+function CourseCard({ course, btext, onCardClick, deleteClick, id }) {
+	const navigate = useNavigate();
 	const handleCardClick = () => {
 		onCardClick(course);
 	};
 
 	const handleEditClick = () => {
-		editClick(course);
+		navigate('/courses/' + { id });
+		// editClick(course);
 	};
 
 	const handleDeleteClick = () => {
@@ -50,12 +53,15 @@ function CourseCard({ course, btext, onCardClick, deleteClick, editClick }) {
 										{formatCreationDate(course.creationDate)}
 									</p>
 									<Button text={btext} onClick={handleCardClick} />
-									<Button onClick={handleDeleteClick}>
-										<FontAwesomeIcon icon={faTrash} />
-									</Button>
-									<Button onClick={handleEditClick}>
-										<FontAwesomeIcon icon={faPencilAlt} />
-									</Button>
+									<br />
+									<br />
+									<FontAwesomeIcon icon={faTrash} onClick={handleDeleteClick} />
+									<br />
+									<br />
+									<FontAwesomeIcon
+										icon={faPencilAlt}
+										onClick={handleEditClick}
+									/>
 								</div>
 							</td>
 						</tr>

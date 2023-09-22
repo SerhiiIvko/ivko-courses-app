@@ -9,6 +9,7 @@ import {
 	loginSuccess,
 	loginFailed,
 } from '../../store/user/authSlice';
+import { login } from '../../services';
 import './Login.css';
 
 function Login({ setToken }) {
@@ -17,7 +18,7 @@ function Login({ setToken }) {
 	const [password, setPassword] = useState('');
 	const [errors, setErrors] = useState({});
 	const navigate = useNavigate();
-	const name = 'ss ss';
+	const name = null;
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -27,24 +28,24 @@ function Login({ setToken }) {
 			return;
 		}
 		dispatch(loginStart());
-		const response = await fetch('http://localhost:4000/login', {
-			method: 'POST',
-			body: JSON.stringify({ name, email, password }),
-			headers: { 'Content-Type': 'application/json' },
-		});
-		const data = await response.json();
-		const token = data.result;
 
-		if (response.ok) {
-			dispatch(loginSuccess(data));
-			setToken({ token, name });
-			navigate('/courses/all');
-		} else {
-			const errorMessage = data.errors
-				? data.errors.join(', ')
-				: 'Unsuccessful login attempt!';
-			setErrors({ server: errorMessage });
-			dispatch(loginFailed(errorMessage));
+		try {
+			const data = await login(name, email, password);
+			if (!data.result || data.result === 'Invalid data.') {
+				const errorMessage = data.errors
+					? data.errors.join(', ')
+					: 'Unsuccessful login attempt!';
+				setErrors({ server: errorMessage });
+				dispatch(loginFailed(errorMessage));
+				alert('Login failed! Check email and password and try again!');
+				navigate('/login');
+			} else {
+				dispatch(loginSuccess(data));
+				setToken({ token: data.result });
+				navigate('/courses/all');
+			}
+		} catch (error) {
+			console.error(error);
 		}
 	};
 
