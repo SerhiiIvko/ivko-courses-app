@@ -7,7 +7,7 @@ import CourseInfo from '../CourseInfo/CourseInfo';
 import coursesReducer from '../../store/courses/coursesReducer';
 import * as types from '../../store/courses/types';
 import EmptyCoursesList from '../Courses/components/EmptyCourseList/EmptyCourseList';
-import { getCourses } from '../../services';
+import { getCourses, deleteCourse } from '../../services';
 import './Courses.css';
 
 const Courses = () => {
@@ -17,7 +17,7 @@ const Courses = () => {
 	const navigate = useNavigate();
 
 	const handleCardClick = (course) => {
-		setSelectedCourse(course);
+		navigate(`/courses/${course.id}`);
 	};
 
 	const handleBackClick = () => {
@@ -48,7 +48,17 @@ const Courses = () => {
 		fetchCourses();
 	}, [dispatch]);
 
-	if (Array.isArray(state.courses.result) === 0) {
+	const handleDeleteCourse = async (id) => {
+		try {
+			await deleteCourse(id);
+			dispatch({ type: types.DELETE_COURSE, payload: id });
+			fetchCourses();
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	if (Array.isArray(state.courses.result).legth === 0) {
 		return <EmptyCoursesList />;
 	}
 
@@ -85,20 +95,10 @@ const Courses = () => {
 										course={course}
 										btext='SHOW COURSE'
 										onCardClick={handleCardClick}
+										onDeleteClick={handleDeleteCourse}
 									/>
 								))}
 					</div>
-					{/* <div>
-						{Array.isArray(state.courses.result) &&
-							state.courses.result.map((course) => (
-								<CourseCard
-									key={course.id}
-									course={course}
-									btext='SHOW COURSE'
-									onCardClick={handleCardClick}
-								/>
-							))}
-					</div> */}
 				</div>
 			)}
 		</div>

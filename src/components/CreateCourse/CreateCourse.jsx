@@ -6,15 +6,14 @@ import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
 import AuthorItem from './components/AuthorItem/AuthorItem';
 import * as types from '../../store/courses/types';
-import { addCourse } from '../../store/courses/actions';
-import { createCourse, getAuthors } from '../../services';
+import { createCourse } from '../../services';
 
 const CreateCourse = () => {
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const [creationDate, setCreationDate] = useState('');
 	const [duration, setDuration] = useState('');
-	const [authors, setAuthors] = useState([]);
+	const [courseAuthors, setCourseAuthors] = useState([]);
 	const [errors, setErrors] = useState({});
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -41,14 +40,13 @@ const CreateCourse = () => {
 			description,
 			creationDate,
 			duration: parseInt(duration, 10),
-			authors,
+			authors: courseAuthors.map((author) => author.id),
 		};
 
 		try {
 			const data = await createCourse(courseData);
 
 			if (data) {
-				// dispatch(addCourse(data));
 				dispatch({
 					type: types.ADD_COURSE,
 					payload: data,
@@ -58,7 +56,7 @@ const CreateCourse = () => {
 				setDescription('');
 				setCreationDate(formattedDate);
 				setDuration('');
-				setAuthors(['4c0dc866-59b5-49c3-b851-bedc3582e896']);
+				setCourseAuthors([]);
 				navigate('/courses/all');
 			} else {
 				console.log('ERROR data response create course: ', data);
@@ -143,7 +141,10 @@ const CreateCourse = () => {
 					{errors.duration && <p className='error'>{errors.duration}</p>}
 					<br />
 					<div>
-						<AuthorItem />
+						<AuthorItem
+							courseAuthors={courseAuthors}
+							setCourseAuthors={setCourseAuthors}
+						/>
 					</div>
 					<br />
 					<Button text='CANCEL' onClick={handleCancel} />

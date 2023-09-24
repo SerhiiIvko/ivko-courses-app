@@ -1,5 +1,4 @@
 import React, { useState, useReducer, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import PropTypes from 'prop-types';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,9 +7,8 @@ import Input from '../../../../common/Input/Input';
 import Button from '../../../../common/Button/Button';
 import { getAuthors, createAuthor, deleteAuthor } from '../../../../services';
 import * as types from '../../../../store/authors/types';
-import { addAuthor } from '../../../../store/authors/actions';
 
-const AuthorItem = () => {
+const AuthorItem = ({ courseAuthors, setCourseAuthors }) => {
 	const [name, setAuthorName] = useState('');
 	const [errors, setErrors] = useState({});
 	const [state, dispatch] = useReducer(authorsReducer, { authors: [] });
@@ -37,6 +35,11 @@ const AuthorItem = () => {
 					payload: newAuthor,
 				});
 				console.log(authorData);
+				const data = await getAuthors();
+				dispatch({
+					type: types.GET_AUTHORS,
+					payload: data,
+				});
 			} else {
 				console.log('ERROR data response create course: ', authorData);
 			}
@@ -44,6 +47,7 @@ const AuthorItem = () => {
 			console.error(error);
 		}
 	};
+
 	const fetchAuthors = async () => {
 		try {
 			const data = await getAuthors();
@@ -64,13 +68,15 @@ const AuthorItem = () => {
 		const errors = {};
 		if (!name.trim() | (name.trim().length < 2)) {
 			errors.name =
-				'Name is required! Name lenght should contains minimum 2 symbols!';
+				'Name is required! Name length should contain a minimum of 2 symbols!';
 		}
 		return errors;
 	};
+
 	const handleInputChange = (event) => {
 		const { name, value } = event.target;
 		setErrors((prevErrors) => ({ ...prevErrors, [name]: '' }));
+
 		switch (name) {
 			case 'name':
 				setAuthorName(value);
@@ -80,17 +86,36 @@ const AuthorItem = () => {
 		}
 	};
 
+	const handleAddAuthorToCourse = (author) => {
+		setCourseAuthors((prevCourseAuthors) => [...prevCourseAuthors, author]);
+	};
+
+	const handleDeleteAuthorFromCourse = (authorId) => {
+		setCourseAuthors((prevCourseAuthors) =>
+			prevCourseAuthors.filter((author) => author.id !== authorId)
+		);
+	};
+
 	const handleDeleteAuthor = async (id) => {
 		try {
 			await deleteAuthor(id);
+			console.log(id);
+
 			dispatch({
 				type: types.DELETE_AUTHOR,
 				payload: id,
+			});
+
+			const data = await getAuthors();
+			dispatch({
+				type: types.GET_AUTHORS,
+				payload: data,
 			});
 		} catch (error) {
 			console.error(error);
 		}
 	};
+
 	return (
 		<div className='main'>
 			<h2>Authors:</h2>
@@ -116,28 +141,45 @@ const AuthorItem = () => {
 							state.authors.result.map((author) => (
 								<div key={author.id}>
 									Name: {author.name}
-									<div onClick={handleDeleteAuthor}>+</div>
+									<div onClick={() => handleAddAuthorToCourse(author)}>+</div>
 									<div>
-										<FontAwesomeIcon icon={faTrash} />
+										<FontAwesomeIcon
+											icon={faTrash}
+											onClick={() => handleDeleteAuthor(author.id)}
+										/>
 									</div>
 								</div>
 							))}
 					</div>
 				</div>
 			</div>
-			<br></br>
+			<br />
 			<div>
-				<h2>Course Authors</h2>
+				<h2>Course Authors List:</h2>
+				<ul>
+					{courseAuthors.map((author) => (
+						<li key={author.id}>
+							{author.name}
+							<FontAwesomeIcon
+								icon={faTrash}
+								onClick={() => handleDeleteAuthorFromCourse(author.id)}
+							/>
+						</li>
+					))}
+				</ul>
 			</div>
 		</div>
 	);
 };
 
-// AuthorItem.propTypes = {
-// 	author: PropTypes.shape({
-// 		id: PropTypes.string.isRequired,
-// 		authorName: PropTypes.string.isRequired,
-// 	}).isRequired,
-// };
+AuthorItem.propTypes = {
+	courseAuthors: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.string.isRequired,
+			name: PropTypes.string.isRequired,
+		})
+	).isRequired,
+	setCourseAuthors: PropTypes.func.isRequired,
+};
 
 export default AuthorItem;

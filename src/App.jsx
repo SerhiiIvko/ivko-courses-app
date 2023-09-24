@@ -8,6 +8,7 @@ import CreateCourse from './components/CreateCourse/CreateCourse';
 import useToken from './helpers/useToken';
 import './App.css';
 import EditCourse from './components/Courses/EditCourse/EditCourse';
+import CourseInfo from './components/CourseInfo/CourseInfo';
 
 function App() {
 	const { token, saveToken, removeToken } = useToken();
@@ -27,6 +28,7 @@ function App() {
 					<>
 						<Route path='/courses/all' element={<Courses />} />
 						<Route path='/courses/add' element={<CreateCourse />} />
+						<Route path='/courses/:id' element={<CourseInfo />} />
 						<Route path='/courses/{id}' element={<EditCourse />} />
 						<Route path='*' element={<Navigate to='/courses/all' />} />
 					</>

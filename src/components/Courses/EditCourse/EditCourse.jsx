@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
 import Input from '../../../common/Input/Input';
 import Button from '../../../common/Button/Button';
 import AuthorItem from '../../CreateCourse/components/AuthorItem/AuthorItem';
 import * as types from '../../../store/courses/types';
-import { getCourse, editCourse, getAuthors } from '../../../services';
+import { editCourse } from '../../../services';
 
 const EditCourse = ({ id }) => {
 	const [title, setTitle] = useState('');
