@@ -25,7 +25,6 @@ function Registration() {
 			const result = await register(name, email, password);
 
 			if (result.result) {
-				console.log(result);
 				navigate('/login');
 			} else {
 				alert('Unsuccessfull');

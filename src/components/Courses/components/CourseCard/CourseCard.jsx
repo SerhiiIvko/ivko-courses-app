@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useReducer, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
@@ -6,19 +6,30 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../../../../common/Button/Button';
 import getCourseDuration from '../../../../helpers/getCourseDuration';
 import getAuthorNames from '../../../../helpers/getAuthorNames';
+import { GET_AUTHORS } from '../../../../store/authors/types';
 import * as types from '../../../../store/courses/types';
+import authorsReducer from '../../../../store/authors/authorsReducer';
 import './CourseCard.css';
+import { getAuthors } from '../../../../services';
 
-function CourseCard({
-	course,
-	authors,
-	btext,
-	onCardClick,
-	id,
-	onDeleteClick,
-}) {
+function CourseCard({ course, role, btext, onCardClick, id, onDeleteClick }) {
 	const navigate = useNavigate();
-	console.log('authors for course card: ', authors);
+	const [state, dispatch] = useReducer(authorsReducer, { authors: [] });
+	const allAuthors = async () => {
+		try {
+			const data = await getAuthors();
+			dispatch({
+				type: GET_AUTHORS,
+				payload: data,
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		allAuthors();
+	}, [dispatch]);
 
 	const handleCardClick = () => {
 		onCardClick(course);
@@ -50,7 +61,7 @@ function CourseCard({
 								<div className='authors'>
 									<div className='author-names'>
 										<strong>Authors: </strong>
-										{getAuthorNames(course.authors.result)}
+										{getAuthorNames(state.authors.result, course.authors)}
 									</div>
 									<p>
 										<strong>Duration: </strong>
@@ -64,17 +75,23 @@ function CourseCard({
 									<br />
 									<br />
 									<div>
-										<FontAwesomeIcon
-											icon={faTrash}
-											onClick={handleDeleteCourse}
-										/>
+										{role === 'admin' && (
+											<>
+												<FontAwesomeIcon
+													icon={faTrash}
+													onClick={handleDeleteCourse}
+												/>
+
+												<FontAwesomeIcon
+													icon={faPencilAlt}
+													onClick={handleEditClick}
+												/>
+											</>
+										)}
 									</div>
+
 									<br />
 									<br />
-									<FontAwesomeIcon
-										icon={faPencilAlt}
-										onClick={handleEditClick}
-									/>
 								</div>
 							</td>
 						</tr>

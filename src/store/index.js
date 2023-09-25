@@ -1,6 +1,6 @@
 import { composeWithDevTools } from 'redux-devtools-extension';
 import rootReducer from './rootReducer';
-import coursesReducer from './courses/coursesReducer.js';
+import coursesReducer from './courses/courseSlice';
 import authReducer from './user/authSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import thunk from 'redux-thunk';

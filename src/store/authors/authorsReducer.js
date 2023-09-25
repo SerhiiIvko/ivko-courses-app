@@ -1,38 +1,32 @@
-import * as types from './types.js';
+import { createSlice } from '@reduxjs/toolkit';
 
-const authorsInitialState = {
-	authors: [],
+const initialState = {
+	courses: [],
 	loading: false,
 	error: null,
 };
 
-const authorsReducer = (state = authorsInitialState, action) => {
-	switch (action.type) {
-		case types.SAVE_AUTHOR:
-			return {
-				...state,
-				authors: [...state.authors, action.payload],
-			};
-		case types.ADD_AUTHOR:
-			return {
-				...state,
-				authors: [authorsInitialState, action.payload],
-			};
-		case types.DELETE_AUTHOR:
-			return {
-				...state,
-				authors: state.authors.result.filter(
-					(author) => author.id !== action.payload.id
-				),
-			};
-		case types.GET_AUTHORS:
-			return {
-				...state,
-				authors: action.payload,
-			};
-		default:
-			return state;
-	}
-};
+const authorSlice = createSlice({
+	name: 'authors',
+	initialState,
+	reducers: {
+		fetchAuthorsStart: (state) => {
+			state.loading = true;
+			state.error = null;
+		},
+		fetchAuthorsSuccess: (state, action) => {
+			state.authors = action.payload;
+			state.loading = false;
+			state.error = null;
+		},
+		fetchAuthorsFailed: (state, action) => {
+			state.loading = false;
+			state.error = action.payload;
+		},
+	},
+});
 
-export default authorsReducer;
+export const { fetchAuthorsStart, fetchAuthorsSuccess, fetchAuthorsFailed } =
+	authorSlice.actions;
+
+export default authorSlice.reducer;

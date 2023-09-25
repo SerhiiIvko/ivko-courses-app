@@ -5,19 +5,19 @@ import {
 	GET_AUTHORS,
 } from './types.js';
 
-export const addAuthor = (payload) => ({
+export const addAuthor = (authorData) => ({
 	type: ADD_AUTHOR,
-	payload,
+	payload: authorData,
 });
-export const deleteAuthor = (payload) => ({
+export const deleteAuthor = (authorData) => ({
 	type: DELETE_AUTHOR,
-	payload,
+	payload: authorData,
 });
-export const saveAuthor = (payload) => ({
+export const saveAuthor = (authorData) => ({
 	type: SAVE_AUTHOR,
-	payload,
+	payload: authorData,
 });
-export const getAuthor = (payload) => ({
+export const getAuthors = (authorData) => ({
 	type: GET_AUTHORS,
-	payload,
+	payload: authorData,
 });

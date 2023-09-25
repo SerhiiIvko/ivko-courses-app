@@ -1,155 +1,23 @@
-// import React, { useState, useEffect, useReducer } from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import { useSelector, useDispatch } from 'react-redux';
-// import SearchBar from './components/SearchBar/SearchBar';
-// import CourseCard from './components/CourseCard/CourseCard';
-// import Button from '../../common/Button/Button';
-// import CourseInfo from '../CourseInfo/CourseInfo';
-// import coursesReducer from '../../store/courses/coursesReducer';
-// import * as types from '../../store/courses/types';
-// import EmptyCoursesList from '../Courses/components/EmptyCourseList/EmptyCourseList';
-// import { getCourses, deleteCourse } from '../../services';
-// import './Courses.css';
-
-// const Courses = () => {
-// 	const [selectedCourse, setSelectedCourse] = useState(null);
-// 	const [searchQuery, setSearchQuery] = useState('');
-// 	const [state, dispatch] = useReducer(coursesReducer, { courses: [] });
-
-// 	const navigate = useNavigate();
-// 	const handleCardClick = (course) => {
-// 		navigate(`/courses/${course.id}`);
-// 	};
-
-// 	const handleBackClick = () => {
-// 		setSelectedCourse(null);
-// 	};
-
-// 	const handleAddCourseClick = () => {
-// 		navigate('/courses/add');
-// 	};
-
-// 	const handleSearch = (query) => {
-// 		setSearchQuery(query);
-// 	};
-
-// 	const fetchCourses = async () => {
-// 		try {
-// 			const data = await getCourses();
-// 			dispatch({
-// 				type: types.GET_COURSES,
-// 				payload: data,
-// 			});
-// 		} catch (error) {
-// 			console.log(error);
-// 		}
-// 	};
-
-// 	useEffect(() => {
-// 		fetchCourses();
-// 	}, [dispatch]);
-
-// 	const handleDeleteCourse = async (id) => {
-// 		try {
-// 			await deleteCourse(id);
-// 			dispatch({ type: types.DELETE_COURSE, payload: id });
-// 			fetchCourses();
-// 		} catch (error) {
-// 			console.error(error);
-// 		}
-// 	};
-
-// 	if (Array.isArray(state.courses.result).legth === 0) {
-// 		return <EmptyCoursesList />;
-// 	}
-
-// 	return (
-// 		<div>
-// 			{selectedCourse ? (
-// 				<div>
-// 					<CourseInfo
-// 						btnText='BACK'
-// 						onBtnClick={handleBackClick}
-// 						course={selectedCourse}
-// 					/>
-// 				</div>
-// 			) : (
-// 				<div className='container'>
-// 					<div className='search'>
-// 						<SearchBar onSearch={handleSearch} />
-// 						<Button text='ADD NEW COURSE' onClick={handleAddCourseClick} />
-// 					</div>
-// 					<br />
-// 					<br />
-// 					<div>
-// 						{Array.isArray(state.courses.result) &&
-// 							state.courses.result
-// 								?.filter((course) =>
-// 									course.title
-// 										?.toLowerCase()
-// 										.trim()
-// 										.includes(searchQuery.toLowerCase())
-// 								)
-// 								.map((course) => (
-// 									<CourseCard
-// 										key={course.id}
-// 										course={course}
-// 										btext='SHOW COURSE'
-// 										onCardClick={handleCardClick}
-// 										onDeleteClick={handleDeleteCourse}
-// 									/>
-// 								))}
-// 					</div>
-// 				</div>
-// 			)}
-// 		</div>
-// 	);
-// };
-
-// export default Courses;
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { checkUserRole } from '../../store/user/thunk';
 import SearchBar from './components/SearchBar/SearchBar';
 import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
-import CourseInfo from '../CourseInfo/CourseInfo';
-import coursesReducer from '../../store/courses/coursesReducer';
-import * as types from '../../store/courses/types';
 import EmptyCoursesList from '../Courses/components/EmptyCourseList/EmptyCourseList';
-import { getCourses, deleteCourse } from '../../services';
+import { deleteCourse, fetchUserData } from '../../services';
 import './Courses.css';
+import { fetchCourses } from '../../store/courses/thunk';
 
 const Courses = () => {
-	const [selectedCourse, setSelectedCourse] = useState(null);
 	const [searchQuery, setSearchQuery] = useState('');
-	const [state, dispatch] = useReducer(coursesReducer, { courses: [] });
-	const [userRole, setUserRole] = useState(null);
-	const accessToken = localStorage.getItem('result');
-	const token = accessToken.split(' ')[1].slice(0, -2);
-	console.log('TOKEN IN THE COURSES PAGE: ', token);
+	const [userRole, setUserRole] = useState('');
+	const { courses, loading, error } = useSelector((state) => state.courses);
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
-
-	useEffect(() => {
-		if (token) {
-			console.log('TOKEN FOR THUNK:', token);
-			dispatch(checkUserRole(token));
-			// .then((result) => {
-			// 	if (result.payload) setUserRole(result.payload.role);
-			// })
-			// .catch((error) => console.error(error));
-		}
-	}, [token]);
-
-	console.log('Now user role is: ', userRole);
 
 	const handleCardClick = (course) => {
 		navigate(`/courses/${course.id}`);
-	};
-
-	const handleBackClick = () => {
-		setSelectedCourse(null);
 	};
 
 	const handleAddCourseClick = () => {
@@ -160,77 +28,63 @@ const Courses = () => {
 		setSearchQuery(query);
 	};
 
-	const fetchCourses = async () => {
-		try {
-			const data = await getCourses();
-			dispatch({
-				type: types.GET_COURSES,
-				payload: data,
-			});
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
 	useEffect(() => {
-		fetchCourses();
+		dispatch(fetchCourses());
+		fetchUserData()
+			.then((data) => setUserRole(data.result.role))
+			.catch((error) => console.error(error));
 	}, [dispatch]);
 
 	const handleDeleteCourse = async (id) => {
 		try {
 			await deleteCourse(id);
-			dispatch({ type: types.DELETE_COURSE, payload: id });
-			fetchCourses();
+			dispatch(fetchCourses());
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
-	if (Array.isArray(state.courses.result).length === 0) {
+	if (Array.isArray(courses.result).length === 0) {
 		return <EmptyCoursesList />;
 	}
 
+	if (loading) return <div>Loading...</div>;
+	if (error) return <div>Error: {error}</div>;
+
 	return (
 		<div>
-			{selectedCourse ? (
+			<div className='container'>
+				<div className='search'>
+					<SearchBar onSearch={handleSearch} />
+					{userRole === 'admin' && (
+						<Button text='ADD NEW COURSE' onClick={handleAddCourseClick} />
+					)}
+				</div>
+				<br />
+				<br />
 				<div>
-					<CourseInfo
-						btnText='BACK'
-						onBtnClick={handleBackClick}
-						course={selectedCourse}
-					/>
+					{Array.isArray(courses.result) &&
+						courses.result
+							.filter((course) =>
+								course.title
+									?.toLowerCase()
+									.trim()
+									.includes(searchQuery.toLowerCase())
+							)
+							.map((course) => (
+								<CourseCard
+									key={course.id}
+									course={course}
+									btext='SHOW COURSE'
+									onCardClick={handleCardClick}
+									onDeleteClick={
+										userRole === 'admin' ? handleDeleteCourse : null
+									}
+									role={userRole}
+								/>
+							))}
 				</div>
-			) : (
-				<div className='container'>
-					<div className='search'>
-						<SearchBar onSearch={handleSearch} />
-						{userRole === 'admin' && (
-							<Button text='ADD NEW COURSE' onClick={handleAddCourseClick} />
-						)}
-					</div>
-					<br />
-					<br />
-					<div>
-						{Array.isArray(state.courses.result) &&
-							state.courses.result
-								?.filter((course) =>
-									course.title
-										?.toLowerCase()
-										.trim()
-										.includes(searchQuery.toLowerCase())
-								)
-								.map((course) => (
-									<CourseCard
-										key={course.id}
-										course={course}
-										btext='SHOW COURSE'
-										onCardClick={handleCardClick}
-										onDeleteClick={handleDeleteCourse}
-									/>
-								))}
-					</div>
-				</div>
-			)}
+			</div>
 		</div>
 	);
 };

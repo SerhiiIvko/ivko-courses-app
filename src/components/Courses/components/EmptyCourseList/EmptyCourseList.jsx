@@ -8,7 +8,7 @@ import './EmptyCourseList.css';
 function EmptyCourseList() {
 	const navigate = useNavigate();
 	const userRole = useSelector((state) => state.auth.data?.role);
-	console.log('user Role is: ', userRole);
+
 	const handleAddCourseClick = () => {
 		navigate('/courses/add');
 	};
@@ -18,10 +18,9 @@ function EmptyCourseList() {
 			<h1>Your List Is Empty</h1>
 			<p>Please use 'Add new course' button to add your first course</p>
 			<br />
-			{userRole === 'admin' && ( // Conditionally render the 'ADD NEW COURSE' button based on the user's role
+			{userRole === 'admin' && (
 				<Button text='ADD NEW COURSE' onClick={handleAddCourseClick} />
 			)}
-			{/* <Button text='ADD NEW COURSE' onClick={handleAddCourseClick} /> */}
 		</div>
 	);
 }

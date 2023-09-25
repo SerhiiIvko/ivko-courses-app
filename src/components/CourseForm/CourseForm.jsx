@@ -57,7 +57,6 @@ const CreateCourse = () => {
 				setCreationDate(date);
 				setDuration('');
 				setCourseAuthors([]);
-				console.log('generated creation date: ', date);
 				navigate('/courses/all');
 			} else {
 				console.log('ERROR data response create course: ', data);

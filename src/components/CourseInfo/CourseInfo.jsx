@@ -1,27 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import Button from '../../common/Button/Button';
 import getCourseDuration from '../../helpers/getCourseDuration';
 import formatCreationDate from '../../helpers/formatCreationDate';
 import getAuthorNames from '../../helpers/getAuthorNames';
-import { getCourse } from '../../services';
+import { GET_AUTHORS } from '../../store/authors/types';
+import { getCourse, getAuthors } from '../../services';
+import authorsReducer from '../../store/authors/authorsReducer';
 import './CourseInfo.css';
 
 function CourseInfo() {
 	const [course, setCourse] = useState(null);
 	const { id } = useParams();
-	const authors = useSelector((state) => state.authors.result);
 	const navigate = useNavigate();
-	console.log('Course Info Authors: ', authors);
-	console.log('Course Info before: ', course);
-	console.log('Course Info id: ', id);
+	const [state, dispatch] = useReducer(authorsReducer, { authors: [] });
+	const allAuthors = async () => {
+		try {
+			const data = await getAuthors();
+			dispatch({
+				type: GET_AUTHORS,
+				payload: data,
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		allAuthors();
+	}, [dispatch]);
+
 	useEffect(() => {
 		async function fetchCourse() {
 			try {
 				const fetchedCourse = await getCourse(id);
 				setCourse(fetchedCourse.result);
-				console.log('Fetched course info: ', fetchedCourse);
 			} catch (error) {
 				console.log(error);
 			}
@@ -32,11 +45,11 @@ function CourseInfo() {
 	const handleBtnClick = () => {
 		navigate('/courses/all');
 	};
-	console.log('Course info: ', course);
 
 	if (!course) {
 		return <div>Loading...</div>;
 	}
+	console.log(course.creationDate);
 	return (
 		<div>
 			<div className='course-container'>
@@ -58,7 +71,7 @@ function CourseInfo() {
 							</p>
 							<p className='author-names'>
 								<strong>Authors: </strong>
-								{/* {getAuthorNames(authors, course.authors)} */}
+								{getAuthorNames(state.authors.result, course.authors)}
 							</p>
 						</div>
 					</div>

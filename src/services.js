@@ -4,7 +4,6 @@ export async function login(name, email, password, role) {
 		body: JSON.stringify({ name, email, password, role }),
 		headers: { 'Content-Type': 'application/json' },
 	});
-	console.log('login response data: ', response);
 	return await response.json();
 }
 
@@ -12,14 +11,12 @@ export async function logout() {
 	const accessToken = localStorage.getItem('result');
 	const token = accessToken.split(' ')[1].slice(0, -2);
 	const URL = `http://localhost:4000/logout/${token}`;
-	console.log('token for removing', token);
 	const response = await fetch(URL, {
 		method: 'DELETE',
 		Authorization: `Bearer ${token}`,
 		body: JSON.stringify(token),
 		headers: { 'Content-Type': 'application/json' },
 	});
-	console.log(response);
 	return await response.json();
 }
 
@@ -34,7 +31,6 @@ export async function register(name, email, password) {
 }
 
 export async function createCourse(courseData) {
-	console.log('course data: ', courseData);
 	const accessToken = localStorage.getItem('result');
 	const token = accessToken.split(' ')[1].slice(0, -2);
 	if (!accessToken) {
@@ -195,7 +191,8 @@ export async function editAuthor(id, authorData) {
 	if (!accessToken) {
 		throw new Error('Access token not found');
 	}
-	const response = await fetch('http://localhost:4000/authors/' + { id }, {
+	const URL = `http://localhost:4000/authors/${id}`;
+	const response = await fetch(URL, {
 		method: 'PUT',
 		body: JSON.stringify(authorData),
 		headers: {
@@ -212,21 +209,20 @@ export async function editAuthor(id, authorData) {
 	return await response.json();
 }
 
-export const fetchUserData = async () => {
+export async function fetchUserData() {
 	const accessToken = localStorage.getItem('result');
 	const token = accessToken.split(' ')[1].slice(0, -2);
-	const response = await fetch('/users/me', {
+	const URL = `http://localhost:4000/users/me/`;
+	const response = await fetch(URL, {
 		method: 'GET',
 		headers: {
 			Authorization: `Bearer ${token}`,
 			'Content-Type': 'application/json',
 		},
 	});
-	console.log('User data from API response: ', response);
 	if (response.ok) {
 		const data = await response.json();
 		return data;
 	}
-	console.log('USER FETCHED SUCCESSFULL: ', response);
-	throw new Error('Failed to fetch user data');
-};
+	return await response.json();
+}
