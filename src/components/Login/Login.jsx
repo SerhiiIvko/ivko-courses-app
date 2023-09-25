@@ -16,7 +16,6 @@ function Login({ setToken }) {
 	const dispatch = useDispatch();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [role, setRole] = useState('');
 	const [errors, setErrors] = useState({});
 	const navigate = useNavigate();
 	const name = null;

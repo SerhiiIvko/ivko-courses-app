@@ -4,6 +4,7 @@ import { fetchUserData, logout } from '../../services';
 export const checkUserRole = createAsyncThunk(
 	'auth/checkUserRole',
 	async (token, thunkAPI) => {
+		console.log('THUNK IS WORKING!!!');
 		try {
 			const userData = await fetchUserData(token);
 			console.log('User data and roles: ', userData.result);

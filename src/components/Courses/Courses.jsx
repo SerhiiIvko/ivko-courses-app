@@ -126,18 +126,24 @@ const Courses = () => {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [state, dispatch] = useReducer(coursesReducer, { courses: [] });
 	const [userRole, setUserRole] = useState(null);
-
-	const token = useSelector((state) => state.auth.data?.token);
+	const accessToken = localStorage.getItem('result');
+	const token = accessToken.split(' ')[1].slice(0, -2);
+	console.log('TOKEN IN THE COURSES PAGE: ', token);
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (token) {
-			dispatch(checkUserRole(token))
-				.then((result) => setUserRole(result.payload.role))
-				.catch((error) => console.error(error));
+			console.log('TOKEN FOR THUNK:', token);
+			dispatch(checkUserRole(token));
+			// .then((result) => {
+			// 	if (result.payload) setUserRole(result.payload.role);
+			// })
+			// .catch((error) => console.error(error));
 		}
 	}, [token]);
+
 	console.log('Now user role is: ', userRole);
+
 	const handleCardClick = (course) => {
 		navigate(`/courses/${course.id}`);
 	};

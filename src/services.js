@@ -212,7 +212,9 @@ export async function editAuthor(id, authorData) {
 	return await response.json();
 }
 
-export const fetchUserData = async (token) => {
+export const fetchUserData = async () => {
+	const accessToken = localStorage.getItem('result');
+	const token = accessToken.split(' ')[1].slice(0, -2);
 	const response = await fetch('/users/me', {
 		method: 'GET',
 		headers: {
@@ -225,6 +227,6 @@ export const fetchUserData = async (token) => {
 		const data = await response.json();
 		return data;
 	}
-
+	console.log('USER FETCHED SUCCESSFULL: ', response);
 	throw new Error('Failed to fetch user data');
 };
