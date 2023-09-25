@@ -7,6 +7,7 @@ import Button from '../../common/Button/Button';
 import AuthorItem from './components/AuthorItem/AuthorItem';
 import * as types from '../../store/courses/types';
 import { createCourse } from '../../services';
+import formatCreationDate from '../../helpers/formatCreationDate';
 
 const CreateCourse = () => {
 	const [title, setTitle] = useState('');
@@ -22,8 +23,7 @@ const CreateCourse = () => {
 	const formattedDate = `${currentDate.getFullYear()}-${
 		currentDate.getMonth() + 1
 	}-${currentDate.getDate()}`;
-	console.log('generated creation date: ', formattedDate);
-
+	const date = formatCreationDate(formattedDate);
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
@@ -38,7 +38,7 @@ const CreateCourse = () => {
 			id: uuidv4(),
 			title,
 			description,
-			creationDate,
+			creationDate: date,
 			duration: parseInt(duration, 10),
 			authors: courseAuthors.map((author) => author.id),
 		};
@@ -54,9 +54,10 @@ const CreateCourse = () => {
 				console.log(courseData);
 				setTitle('');
 				setDescription('');
-				setCreationDate(formattedDate);
+				setCreationDate(date);
 				setDuration('');
 				setCourseAuthors([]);
+				console.log('generated creation date: ', date);
 				navigate('/courses/all');
 			} else {
 				console.log('ERROR data response create course: ', data);

@@ -5,7 +5,7 @@ import { faTrash, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../../../common/Button/Button';
 import getCourseDuration from '../../../../helpers/getCourseDuration';
-import formatCreationDate from '../../../../helpers/formatCreationDate';
+import getAuthorNames from '../../../../helpers/getAuthorNames';
 import * as types from '../../../../store/courses/types';
 import './CourseCard.css';
 
@@ -50,7 +50,7 @@ function CourseCard({
 								<div className='authors'>
 									<div className='author-names'>
 										<strong>Authors: </strong>
-										{/* {getAuthorNames(authorS, course.authors)} */}
+										{getAuthorNames(course.authors.result)}
 									</div>
 									<p>
 										<strong>Duration: </strong>
@@ -58,7 +58,7 @@ function CourseCard({
 									</p>
 									<p>
 										<strong>Created: </strong>
-										{formatCreationDate(course.creationDate)}
+										{course.creationDate}
 									</p>
 									<Button text={btext} onClick={handleCardClick} />
 									<br />

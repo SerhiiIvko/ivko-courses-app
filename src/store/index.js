@@ -3,6 +3,8 @@ import rootReducer from './rootReducer';
 import coursesReducer from './courses/coursesReducer.js';
 import authReducer from './user/authSlice';
 import { configureStore } from '@reduxjs/toolkit';
+import thunk from 'redux-thunk';
+import { applyMiddleware } from 'redux';
 import authorsReducer from './authors/authorsReducer';
 
 const appInitialState = {
@@ -13,6 +15,7 @@ const appInitialState = {
 
 const store = configureStore(
 	{ reducer: rootReducer },
+	applyMiddleware(thunk),
 	appInitialState,
 	composeWithDevTools()
 );

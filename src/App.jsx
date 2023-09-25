@@ -4,7 +4,7 @@ import Header from './components/Header/Header';
 import Login from './components/Login/Login';
 import Registration from './components/Registration/Registration';
 import Courses from './components/Courses/Courses';
-import CreateCourse from './components/CreateCourse/CreateCourse';
+import CourseForm from './components/CourseForm/CourseForm';
 import useToken from './helpers/useToken';
 import './App.css';
 import EditCourse from './components/Courses/EditCourse/EditCourse';
@@ -27,7 +27,7 @@ function App() {
 				{token && (
 					<>
 						<Route path='/courses/all' element={<Courses />} />
-						<Route path='/courses/add' element={<CreateCourse />} />
+						<Route path='/courses/add' element={<CourseForm />} />
 						<Route path='/courses/:id' element={<CourseInfo />} />
 						<Route path='/courses/{id}' element={<EditCourse />} />
 						<Route path='*' element={<Navigate to='/courses/all' />} />

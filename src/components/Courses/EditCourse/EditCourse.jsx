@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Input from '../../../common/Input/Input';
 import Button from '../../../common/Button/Button';
-import AuthorItem from '../../CreateCourse/components/AuthorItem/AuthorItem';
+import AuthorItem from '../../CourseForm/components/AuthorItem/AuthorItem';
 import * as types from '../../../store/courses/types';
 import { editCourse } from '../../../services';
 
