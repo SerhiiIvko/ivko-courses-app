@@ -24,7 +24,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prepublish": "npm run eslint:fix",
+    "prepublish": "npm run eslint:fix && npm run test:nowatch",
     "test:nowatch": "react-scripts test --watchAll=false",
     "prepare": "husky install",
     "eslint": "eslint --ext .js --ext .jsx src",
